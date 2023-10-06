@@ -59,7 +59,7 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
                db: Session = Depends(get_db)):
     print(form_data)
     user = get_user(db=db, username=form_data.username)
-    if not user or pwd_context.verify(form_data.password, user.password):
+    if not user or not pwd_context.verify(form_data.password, user.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect Username or Password",
