@@ -4,7 +4,7 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a use:link class="navbar-brand" href='/' @click="() => {store.keyword = '', store.page = 0}">FastVue</a>
+                <router-link class="navbar-brand" :to="{ name: 'home' }" @click="() => {store.keyword = '', store.page = 0}">FastVue</router-link>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent.collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
                 </button>
@@ -12,13 +12,13 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li v-if="store.is_login">
                             <li class="nav-item">
-                                <a use:link class="nav-link" href='/user-login' @click="() => {
+                                <router-link :to="{ name: 'user-login'}" class="nav-link" @click="() => {
                                     store.$patch({
                                         page: store.page,
                                         access_token : '',
                                         username: '', 
-                                        is_login: false})
-                                }">로그아웃 {{ store.username }}</a>
+                                        is_login: false})                                    
+                                }">로그아웃 {{ store.username }}</router-link>
                             </li>
                         </li>
 
