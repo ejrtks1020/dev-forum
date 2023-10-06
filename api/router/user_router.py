@@ -9,9 +9,12 @@ from sqlalchemy.orm import Session
 from starlette import status
 from schema import UserCreate, Token
 from crud import create_user, get_existing_user, get_user
+from starlette.config import Config
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
-SECRET_KEY = "985f3ceb6656d4ec8a68fa5081483e5e05b5074d531199964bd9a224a429d0b4"
+config = Config('env/.env')
+
+ACCESS_TOKEN_EXPIRE_MINUTES = int(config('ACCESS_TOKEN_EXPIRE_MINUTES'))
+SECRET_KEY = config('SECRET_KEY')
 ALGORITHM = "HS256"
 
 oauth2_schema = OAuth2PasswordBearer(tokenUrl="/api/user/login")

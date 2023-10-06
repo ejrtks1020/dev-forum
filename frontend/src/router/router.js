@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from "../components/Home.vue"
 import Detail from "../components/Detail.vue"
 import QuestionCreate from "../components/QuestionCreate.vue"
@@ -9,7 +9,7 @@ import AnswerModify from "../components/AnswerModify.vue"
 
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes: [
         { path: '/', name:'home', component: Home },
         { path: '/detail/:question_id', name:'detail', component: Detail, props:true},
