@@ -1,0 +1,29 @@
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    command: gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:8000
+    container_name: api
+    environment:
+      PORT: 8000
+    ports:
+      - '8000:8000'
+    restart: 'no'
+    networks:
+      - local-net
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    container_name: web
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    networks:
+      - local-net
+
+networks:
+  local-net:
+    driver: bridge
