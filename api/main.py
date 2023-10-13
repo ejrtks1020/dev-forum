@@ -3,7 +3,7 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import FileResponse
 from starlette.staticfiles import StaticFiles
 from router import question_router, answer_router, user_router
-
+import os
 app = FastAPI()
 
 origins = [
@@ -17,6 +17,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
+
+folder = os.path.dirname(__file__)
 
 app.include_router(question_router.router)
 app.include_router(answer_router.router)

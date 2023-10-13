@@ -1,12 +1,18 @@
 FROM python:3.9
 
-WORKDIR /app
-
 RUN apt-get update && apt-get install -y --no-install-recommends \
     software-properties-common build-essential gcc git curl cmake \
     vim zip sudo nano openssh-server wget ca-certificates netbase procps libpq-dev nginx supervisor
 
-COPY . .
+WORKDIR /app
+
+RUN mkdir /app/api
+RUN mkdir /app/frontend
+
+COPY api/ /app/api/
+COPY frontend/ /app/frontend/
+
+WORKDIR /app/api
 
 RUN pip install -r requirements.txt
 
