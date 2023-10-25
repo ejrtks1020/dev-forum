@@ -9,8 +9,11 @@ WORKDIR /app
 RUN mkdir /app/api
 RUN mkdir /app/frontend
 
+
 COPY api/ /app/api/
 COPY frontend/ /app/frontend/
+COPY gunicorn/ /app/gunicorn/
+COPY supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 WORKDIR /app/api
 
