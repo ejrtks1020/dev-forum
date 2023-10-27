@@ -1,6 +1,9 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, Table
 from sqlalchemy.orm import relationship
-from database.database import Base
+from database.database import Base, config, engine
+import os
+
+SQLALCHEMY_DATABASE_PATH = config('SQLALCHEMY_DATABASE_PATH')
 
 question_voter = Table(
     'question_voter',
@@ -50,3 +53,5 @@ class User(Base):
     password = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False)
 
+if not os.path.exists(SQLALCHEMY_DATABASE_PATH):
+    Base.metadata.create_all(bind=engine)
