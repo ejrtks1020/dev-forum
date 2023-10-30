@@ -17,6 +17,21 @@ class Question(BaseModel):
 
     class Config:
         orm_mode = True
+    
+    @staticmethod
+    def from_orm(question):
+        answers = question.answers
+        sorted_answers = sorted(answers, key = lambda x : [len(x.voter), x.create_date], reverse=True)
+        return Question(
+            id=question.id,
+            subject=question.subject,
+            content=question.content,
+            create_date=question.create_date,
+            answers=sorted_answers,
+            user=question.user,
+            modify_date=question.modify_date,
+            voter=question.voter 
+        )
 
 class QuestionCreate(BaseModel):
     subject: str

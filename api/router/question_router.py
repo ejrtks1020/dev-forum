@@ -9,7 +9,8 @@ from starlette import status
 from router.user_router import get_current_user
 
 router = APIRouter(
-    prefix="/api/question"
+    prefix="/api/question",
+    tags=['question']
 )
 
 @router.get("/list", response_model=schema.question_schema.QuestionList)
@@ -21,9 +22,10 @@ def question_list(db: Session=Depends(get_db), page: int = 0, size: int = 10, ke
         }
 
 @router.get("/detail/{question_id}", response_model=schema.question_schema.Question)
-def question_detail(question_id: int, db: Session=Depends(get_db)):
+def question_detail(question_id: int, page: int = 0, size: int = 10, db: Session=Depends(get_db)):
     question = crud.question_crud.get_question(db=db, question_id=question_id)
-    return question
+    response = schema.question_schema.Question.from_orm(question)
+    return response
 
 @router.post("/create", status_code=status.HTTP_204_NO_CONTENT)
 def question_create(_question_create: schema.question_schema.QuestionCreate,

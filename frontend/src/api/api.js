@@ -61,12 +61,13 @@ const fastapi = (operation, url, params, success_callback, failure_callback) => 
                         if (failure_callback) {
                             failure_callback(json)
                         }else {
-                            alert(JSON.stringify(json))
+                            alert("response status except", JSON.stringify(json))
                         }
                     }
                 })
                 .catch(error => {
-                    alert(JSON.stringify(error))
+                    console.log(error)
+                    alert("response catch", JSON.stringify(error))
                 })
         })
 }

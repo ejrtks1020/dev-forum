@@ -3,7 +3,7 @@ from database.models import Question, Answer
 from sqlalchemy.orm import Session
 from schema import QuestionCreate, QuestionUpdate, QuestionDelete
 from database.models import User
-
+import crud
 def get_question_list(db: Session, skip: int = 0, limit: int = 10, keyword: str = ''):
 
     question_list = db.query(Question)

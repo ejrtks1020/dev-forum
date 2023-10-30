@@ -34,8 +34,9 @@
     </div>
     <button class="btn btn-secondary" @click="$router.push('/')">목록으로</button>
 
-    <h5 class="border-bottom my-3 py-2">{{ question.answers.length }}개의 답변이 있습니다.</h5>
-    <li v-for="answer in question.answers">
+
+    <h5 class="border-bottom my-3 py-2">{{ answerTotal}}개의 답변이 있습니다.</h5>
+    <li v-for="answer, index in answerList">
       <div class="card my-3">
         <div class="card body">
           <div class="card-text" style="white-space: pre-line;">{{ answer.content }}</div>
@@ -64,6 +65,25 @@
         </div>
       </div>
     </li>
+
+     <!-- 페이징처리 시작 -->
+     <ul class="pagination justify-content-center">
+         <!-- 이전페이지 -->
+         <li v-if="answerPage > 0" class="page-item">
+         <button class="page-link" @click="fetchAnswerList(answerPage - 1)">이전</button>
+         </li>
+ 
+         <li v-for="loop_page in answerTotalPage" :key="loop_page" class="page-item">
+         <!-- {{ loop_page }} -->
+         <button v-if="loop_page >= answerPage-5 && loop_page <= answerPage+5" class="page-link" :class="{ 'active': loop_page-1 === answerPage }" @click="fetchAnswerList(loop_page-1)">{{ loop_page }}</button>
+         </li>
+ 
+         <!-- 다음페이지 -->
+         <li v-if="answerPage < answerTotalPage - 1" class="page-item">
+         <button class="page-link" @click="fetchAnswerList(answerPage + 1)">다음</button>
+         </li>
+     </ul>
+     <!-- 페이징처리 끝 -->
 
     <Error :error= "_error"/>
     <form method="post" class="my-3" @submit.prevent>
@@ -100,9 +120,54 @@ const router = useRouter(); // useRoute 함수를 사용하여 $route 객체에 
 // const questionId = route.params.question_id
 const questionId = props.question_id
 // console.log("질문 id : " + route.params.question_id);
-let content = ref("")
-let _error = ref({})
+const content = ref("")
+const _error = ref({})
 console.log("content: " + content)
+
+const answerSize = ref(3);
+const answerList = ref([]);
+const answerPage = ref(0);
+const answerTotal = ref(0);
+const answerTotalPage = ref(Math.ceil(answerTotal.value/answerSize.value));
+
+const fetchAnswerList = async (_page) => {
+ answerPage.value = _page
+ const operation = 'get';
+ const url = '/api/answer/list/' + questionId; // FastAPI 엔드포인트 경로를 수정해주세요.
+ const params = {
+     page: _page,
+     size: answerSize.value,
+ }; // 필요한 경우 요청 매개변수(params)를 설정하세요.
+ 
+ try {
+     // fastapi 모듈을 사용하여 FastAPI 엔드포인트로 GET 요청 수행
+     fastapi(
+     operation,
+     url,
+     params,
+     (json) => {
+         if (json) {
+         // 응답이 성공한 경우 데이터를 questionList에 할당
+         answerList.value = json.answer_list;
+         answerTotal.value = json.total
+         answerTotalPage.value = Math.ceil(answerTotal.value/answerSize.value);
+        //  console.log("answer total Page : ", answerTotalPage.value)
+         }
+         // console.log(answerTotalPage.value);
+         console.log("current answer page : ", answerPage.value);         
+     },
+     (error) => {
+         console.error('Error fetching answer list:', error);
+         // 에러 처리를 원하는 대로 수행하세요.
+     }
+     );
+ } catch (error) {
+     console.error('Error fetching answer list:', error);
+     // 에러 처리를 원하는 대로 수행하세요.
+ }
+ };
+ 
+
 
 const postAnswer = async () => {
   console.log("post Answer - before")
@@ -114,9 +179,10 @@ const postAnswer = async () => {
   try {
       fastapi(operation,url,params,
       (json) => {
-          content = "";
+          content.value = "";
           _error.value = {};
           fetchQuestion();
+          fetchAnswerList(answerPage.value);
       },
       (error_json) => {
           console.error('Error fetching question list:', error_json.detail[0].msg);
@@ -182,7 +248,8 @@ const deleteAnswer = async (answer_id) => {
     }
     fastapi('delete', url, params,
     (json) => {
-      fetchQuestion()
+      fetchQuestion();
+      fetchAnswerList(answerPage.value);      
     },
     (error) => {
       _error.value = error
@@ -198,7 +265,8 @@ const voteQuestion = async (_question_id) => {
     }
     fastapi('post', url, params,
     (json) => {
-      fetchQuestion()
+      fetchQuestion();
+      fetchAnswerList(answerPage.value);      
     },
     (error) => {
       _error.value = error
@@ -214,7 +282,8 @@ const voteAnswer = async (_answer_id) => {
     }
     fastapi('post', url, params,
     (json) => {
-      fetchQuestion()
+      fetchQuestion();
+      fetchAnswerList(answerPage.value);
     },
     (error) => {
       _error.value = error
@@ -224,6 +293,7 @@ const voteAnswer = async (_answer_id) => {
 
 onMounted(() => {
   fetchQuestion();
+  fetchAnswerList(answerPage.value);
 });
 </script>
   

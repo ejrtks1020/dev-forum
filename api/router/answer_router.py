@@ -2,15 +2,22 @@ from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
 from starlette.responses import RedirectResponse
 from schema import *
-from crud import answer_crud, question_crud, get_answer, update_answer, delete_answer, vote_answer
+from crud import answer_crud, question_crud, get_answer, update_answer, delete_answer, vote_answer, get_answer_list
 from sqlalchemy.orm import Session
 from database.database import get_db
 from router.user_router import get_current_user
 from database.models import User
 
 router = APIRouter(
-    prefix="/api/answer"
+    prefix="/api/answer",
+    tags=['answer']
 )
+
+@router.get("/list/{question_id}", response_model=AnswerList)
+def question_list(question_id: int, page: int = 0, size: int = 10, db: Session=Depends(get_db)):
+    total, _answer_list = get_answer_list(db, question_id=question_id, skip=page*size, limit=size)
+    response = AnswerList(answer_list=_answer_list, total=total)
+    return response
 
 @router.post("/create/{question_id}", status_code=status.HTTP_204_NO_CONTENT)
 def answer_create(question_id: int,

@@ -3,6 +3,13 @@ from sqlalchemy.orm import Session
 from schema import AnswerCreate, AnswerUpdate
 from database.models import Question, Answer, User
 
+def get_answer_list(db: Session, question_id: int, skip: int = 0, limit: int = 10):
+    answer_list = db.query(Answer).filter(Answer.question_id == question_id)
+    total = answer_list.distinct().count()
+    sorted_answers = sorted(answer_list.all(), key = lambda x : [len(x.voter), x.create_date], reverse=True)
+    answer_list = sorted_answers[skip:skip + limit]
+    return total, answer_list
+
 def create_answer(db: Session, question: Question, answer_create: AnswerCreate, user: User):
     db_answer = Answer(question=question,
                        content=answer_create.content,

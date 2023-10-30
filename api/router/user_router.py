@@ -20,7 +20,8 @@ ALGORITHM = "HS256"
 oauth2_schema = OAuth2PasswordBearer(tokenUrl="/api/user/login")
 
 router = APIRouter(
-    prefix="/api/user"
+    prefix="/api/user",
+    tags=['user']
 )
 
 def get_current_user(token: str = Depends(oauth2_schema),
