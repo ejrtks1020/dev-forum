@@ -14,7 +14,7 @@ router = APIRouter(
 )
 
 @router.get("/list/{question_id}", response_model=AnswerList)
-def question_list(question_id: int, page: int = 0, size: int = 10, db: Session=Depends(get_db)):
+def answer_list(question_id: int, page: int = 0, size: int = 10, db: Session=Depends(get_db)):
     total, _answer_list = get_answer_list(db, question_id=question_id, skip=page*size, limit=size)
     response = AnswerList(answer_list=_answer_list, total=total)
     return response

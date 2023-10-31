@@ -15,6 +15,7 @@
          <table class="table">
              <thead>
              <tr class="text-center table-dark">
+                 <th class="custom-th">조회수</th>
                  <th class="custom-th">번호</th>
                  <th class="custom-th" style="width:50%">제목</th>
                  <th class="custom-th">작성자</th>
@@ -23,6 +24,7 @@
              </thead>
              <tbody>
              <tr class="text-center" v-for="question, index in questionList" :key="question.id">
+                 <td class="custom-td">{{ question.view ? question.view : 0 }}</td>
                  <td class="custom-td">{{total - (store.page * size) - index}}</td>
                  <td class="text-start">
                  <router-link :to="{ name: 'detail', params: { question_id: question.id }}">

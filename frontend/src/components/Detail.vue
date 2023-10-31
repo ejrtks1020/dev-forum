@@ -7,6 +7,7 @@
     <div class="card my-3">
       <div class="card-body">
         <!-- <div v-html="markdownToHtml"></div> -->
+        <div style="text-align: right;">조회수 : {{question.view}}</div>
         <div class="card-text" v-html="marked.parse(question.content)"></div>
         <div class="d-flex justify-content-end">
           <div v-if="question.modify_date" class="badge bg-light text-dark p-2 text-start mx-3">
@@ -115,7 +116,7 @@ const props = defineProps({
   question_id: String,
 });
 
-const question = ref({answers:[], voter:[], content:''});
+const question = ref({answers:[], voter:[], content:'', view:0});
 const router = useRouter(); // useRoute 함수를 사용하여 $route 객체에 액세스
 // const questionId = route.params.question_id
 const questionId = props.question_id
