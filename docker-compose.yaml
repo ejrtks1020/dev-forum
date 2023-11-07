@@ -43,6 +43,8 @@ services:
   grafana:
     image: grafana/grafana
     container_name: grafana
+    environment:
+      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s:%(http_port)s/grafana/
     volumes:
       - ./grafana/volume:/var/lib/grafana
     restart: always
