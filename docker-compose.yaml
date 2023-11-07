@@ -46,6 +46,8 @@ services:
     volumes:
       - ./grafana/volume:/var/lib/grafana
     restart: always
+    depends_on:
+      - prometheus
     networks:
       - external
       - internal

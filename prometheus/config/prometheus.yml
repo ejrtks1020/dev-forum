@@ -1,0 +1,18 @@
+global:
+  scrape_interval: 15s     # scrap target의 기본 interval을 15초로 변경 / default = 1m
+  evaluation_interval: 15s  # rule 을 얼마나 빈번하게 검증하는지 / default = 1m
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+    - targets: ['localhost:9090']
+    basic_auth:
+      username: "admin"
+      password: "admin1!"
+  - job_name: 'api'
+    static_configs:
+    - targets: ['api:8000']
+    basic_auth:
+      username: "admin"
+      password: "admin1!"
+

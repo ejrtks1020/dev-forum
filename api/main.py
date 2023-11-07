@@ -34,7 +34,7 @@ def metrics():
     REQUESTS.labels(method='GET', endpoint="/metrics", status_code=200).inc()
     return Response(
             media_type="text/plain",
-            content=generate_latest()
+            content=generate_latest(REGISTRY)
             )
 
 @app.get("/")
