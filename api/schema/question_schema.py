@@ -14,6 +14,7 @@ class Question(BaseModel):
     user: Union[User, None]
     modify_date: Union[datetime.datetime, None] = None
     voter: List[User] = []
+    view: Union[int, None] = None
 
     class Config:
         orm_mode = True
@@ -30,7 +31,8 @@ class Question(BaseModel):
             answers=sorted_answers,
             user=question.user,
             modify_date=question.modify_date,
-            voter=question.voter 
+            voter=question.voter,
+            view=question.view 
         )
 
 class QuestionCreate(BaseModel):
