@@ -12,7 +12,7 @@ services:
       - '8000:8000'
     restart: 'no'
     networks:
-      - local-net
+      - external
   nginx:
     build:
       context: .
@@ -23,8 +23,35 @@ services:
     depends_on:
       - api
     networks:
-      - local-net
-
+      - external
+      - internal
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus/config:/etc/prometheus
+      - ./prometheus/volume:/prometheus
+    command:
+      - --web.enable-lifecycle
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --web.external-url=/prometheus
+      - --web.route-prefix=/
+    restart: always
+    networks:
+      - external
+      - internal
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    volumes:
+      - ./grafana/volume:/var/lib/grafana
+    restart: always
+    networks:
+      - external
+      - internal
 networks:
-  local-net:
+  internal:
+    driver: bridge
+    internal: true
+  external:
     driver: bridge

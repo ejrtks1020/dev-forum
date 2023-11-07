@@ -5,3 +5,6 @@ myapi.db
 __pycache__
 migrations
 alembic.ini
+prometheus/volume/
+prometheus/config/*.log
+grafana/
