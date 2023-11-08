@@ -7,12 +7,14 @@ services:
     # command: gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:8000
     container_name: api
     environment:
-      PORT: 8000
+      - PORT=8000
+      - TZ=Asia/Seoul
     ports:
       - '8000:8000'
     restart: 'no'
     networks:
       - external
+
   nginx:
     build:
       context: .
@@ -25,6 +27,9 @@ services:
     networks:
       - external
       - internal
+    environment:
+      - TZ=Asia/Seoul
+
   prometheus:
     image: prom/prometheus
     container_name: prometheus
@@ -40,11 +45,15 @@ services:
     networks:
       - external
       - internal
+    environment:
+      - TZ=Asia/Seoul
+
   grafana:
     image: grafana/grafana
     container_name: grafana
     environment:
       - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s:%(http_port)s/grafana/
+      - TZ=Asia/Seoul
     volumes:
       - ./grafana/volume:/var/lib/grafana
     restart: always
@@ -53,6 +62,43 @@ services:
     networks:
       - external
       - internal
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys
+      - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
+    networks:
+      - internal
+      - external
+    environment:
+      - TZ=Asia/Seoul
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+      - ./cadvisor/web.htpasswd:/etc/opt/web.htpasswd
+    networks:
+      - internal
+      - external
+    command:
+      - -url_base_prefix=/cadvisor
+      - -http_auth_file=/etc/opt/web.htpasswd
+    environment:
+      - TZ=Asia/Seoul
+  
 networks:
   internal:
     driver: bridge

@@ -15,4 +15,12 @@ scrape_configs:
     basic_auth:
       username: "admin"
       password: "admin1!"
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']
+  - job_name: 'cadvisor'
+    metrics_path: '/cadvisor/metrics'
+    static_configs:
+      - targets: ['cadvisor:8080']
+
 
